@@ -2,7 +2,9 @@
   "name": "C_Board_Standard_Robot",
   "type": "ARM",
   "dependenceList": [],
-  "srcDirs": [],
+  "srcDirs": [
+    ".eide/deps"
+  ],
   "virtualFolder": {
     "name": "<virtual_root>",
     "files": [],
@@ -284,7 +286,9 @@
   "outDir": "build",
   "deviceName": null,
   "packDir": null,
-  "miscInfo": {},
+  "miscInfo": {
+    "uid": "afb8eb6c34efb8daf095c3579466c613"
+  },
   "targets": {
     "C_Board_Standard_Robot": {
       "excludeList": [],
@@ -417,8 +421,6 @@
       "uploadConfigMap": {},
       "custom_dep": {
         "name": "default",
-        "sourceDirList": [],
-        "libList": [],
         "incList": [
           "../Inc",
           "../Drivers/STM32F4xx_HAL_Driver/Inc",
@@ -436,8 +438,11 @@
           "../Components/Devices",
           "../Components/Algorithm/Include",
           ".cmsis/include",
-          "RTE/_C_Board_Standard_Robot"
+          "RTE/_C_Board_Standard_Robot",
+          ".eide/deps"
         ],
+        "libList": [],
+        "sourceDirList": [],
         "defineList": [
           "USE_HAL_DRIVER",
           "STM32F407xx",
