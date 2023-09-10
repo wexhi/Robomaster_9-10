@@ -10,6 +10,11 @@
     "files": [],
     "folders": [
       {
+        "name": "::CMSIS",
+        "files": [],
+        "folders": []
+      },
+      {
         "name": "Application",
         "files": [],
         "folders": [
@@ -196,45 +201,6 @@
         ]
       },
       {
-        "name": "RTOS TASK",
-        "files": [
-          {
-            "path": "../User/Task/Chassis_task.c"
-          },
-          {
-            "path": "EXCHANGE.c"
-          },
-          {
-            "path": "../User/Task/UI_task.c"
-          }
-        ],
-        "folders": []
-      },
-      {
-        "name": "USER",
-        "files": [
-          {
-            "path": "../User/AlgorithmLayer/CRC.c"
-          },
-          {
-            "path": "../User/AlgorithmLayer/pid.c"
-          },
-          {
-            "path": "../User/DriverLayer/drv_can.c"
-          },
-          {
-            "path": "../User/DriverLayer/drv_usart.c"
-          },
-          {
-            "path": "../User/PotocaLayer/judge.c"
-          },
-          {
-            "path": "../User/PotocaLayer/rc_potocal.c"
-          }
-        ],
-        "folders": []
-      },
-      {
         "name": "Middlewares",
         "files": [],
         "folders": [
@@ -277,8 +243,42 @@
         ]
       },
       {
-        "name": "::CMSIS",
-        "files": [],
+        "name": "RTOS TASK",
+        "files": [
+          {
+            "path": "../User/Task/Chassis_task.c"
+          },
+          {
+            "path": "EXCHANGE.c"
+          },
+          {
+            "path": "../User/Task/UI_task.c"
+          }
+        ],
+        "folders": []
+      },
+      {
+        "name": "USER",
+        "files": [
+          {
+            "path": "../User/AlgorithmLayer/CRC.c"
+          },
+          {
+            "path": "../User/AlgorithmLayer/pid.c"
+          },
+          {
+            "path": "../User/DriverLayer/drv_can.c"
+          },
+          {
+            "path": "../User/DriverLayer/drv_usart.c"
+          },
+          {
+            "path": "../User/PotocaLayer/judge.c"
+          },
+          {
+            "path": "../User/PotocaLayer/rc_potocal.c"
+          }
+        ],
         "folders": []
       }
     ]
@@ -406,19 +406,26 @@
         },
         "options": "null"
       },
-      "uploader": "JLink",
+      "uploader": "OpenOCD",
       "uploadConfig": {
         "bin": "",
-        "baseAddr": "",
-        "cpuInfo": {
-          "vendor": "null",
-          "cpuName": "null"
-        },
-        "proType": 1,
-        "speed": 8000,
-        "otherCmds": ""
+        "target": "stm32f4x",
+        "interface": "stlink-v2",
+        "baseAddr": "0x08000000"
       },
-      "uploadConfigMap": {},
+      "uploadConfigMap": {
+        "JLink": {
+          "bin": "",
+          "baseAddr": "",
+          "cpuInfo": {
+            "vendor": "null",
+            "cpuName": "null"
+          },
+          "proType": 1,
+          "speed": 8000,
+          "otherCmds": ""
+        }
+      },
       "custom_dep": {
         "name": "default",
         "incList": [
