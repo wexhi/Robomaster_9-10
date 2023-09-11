@@ -25,7 +25,7 @@ extern float powerdata[4];
 extern uint16_t shift_flag;
 
 uint8_t rc[18];
-uint8_t motor_flag[4] = {1, 1, 1, 1};
+uint8_t motor_flag[4] = {0, 0, 0, 0}; // LF RF RB LB
 int16_t avg_speed = 0;
 // Save imu data
 
@@ -82,6 +82,7 @@ void Chassis_task(void const *pvParameters)
       LEDR_ON(); // RED LED
       LEDB_OFF();
       LEDG_OFF();
+      test_move();
     }
     else
     {
@@ -180,6 +181,33 @@ void RC_to_motor(void)
       motor_speed_target[i] = 0;
     }
   }
+  // 电机电流控制
+  chassis_current_give();
+}
+
+
+void test_move(void)
+{
+  // 从遥控器获取控制输入
+  // int16_t forward_backward_input = rc_ctrl.rc.ch[1]; // 前后输入
+  // int16_t left_right_input = rc_ctrl.rc.ch[0];       // 左右输入
+  // int16_t rotation_input = rc_ctrl.rc.ch[2];         // 旋转输入
+  Vx = rc_ctrl.rc.ch[3]; // 前后输入
+  Vy = rc_ctrl.rc.ch[2];       // 左右输入
+  Wz = rc_ctrl.rc.ch[0];         // 旋转输入
+
+  /*************记得加上线性映射***************/
+
+  // 根据分解的速度调整电机速度目标
+  // motor_speed_target[CHAS_LF] = Vx - Vy - Wz;
+  // motor_speed_target[CHAS_RF] = Vx + Vy + Wz;
+  // motor_speed_target[CHAS_RB] = Vx - Vy + Wz;
+  // motor_speed_target[CHAS_LB] = Vx + Vy - Wz;
+  motor_speed_target[CHAS_LF] = Wz + Vx + Vy;
+  motor_speed_target[CHAS_RF] = Wz - Vx + Vy;
+  motor_speed_target[CHAS_RB] = Wz - Vx - Vy;
+  motor_speed_target[CHAS_LB] = Wz + Vx - Vy;
+
   // 电机电流控制
   chassis_current_give();
 }
