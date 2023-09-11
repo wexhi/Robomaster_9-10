@@ -3,6 +3,12 @@
 #include "INS_task.h"
 #include "exchange.h"
 #include "drv_can.h"
+
+#define RC_MAX 660
+#define RC_MIN -660
+#define motor_max 450
+#define motor_min -450
+
 pid_struct_t motor_pid_chassis[4];
 pid_struct_t supercap_pid;
 motor_info_t motor_info_chassis[8];        // 电机信息结构体
@@ -17,7 +23,10 @@ extern RC_ctrl_t rc_ctrl;
 extern ins_data_t ins_data;
 extern float powerdata[4];
 extern uint16_t shift_flag;
+
 uint8_t rc[18];
+uint8_t motor_flag[4] = {1, 0, 0, 0};
+int16_t avg_speed = 0;
 // Save imu data
 
 int8_t chassis_mode = 1; // 判断底盘状态，用于UI编写
@@ -49,13 +58,11 @@ void Chassis_task(void const *pvParameters)
   for (;;) // 底盘运动任务
   {
     // 遥控器控制
-    // chanel 0 left max==660,right max==-660
+    // chanel 0 left max==-660,right max==660
     // chanel 1 up max==660,down max==-660
     // chanel 2 left max==-660,right max==660
     // chanel 3 up max==660,down max==-660
     // chanel 4 The remote control does not have this channel
-
-
 
     if (rc_ctrl.rc.s[0] == 1)
     {
@@ -63,13 +70,14 @@ void Chassis_task(void const *pvParameters)
       LEDR_OFF();
       LEDG_OFF();
     }
-    else if (rc_ctrl.rc.s[0]==2)
+    else if (rc_ctrl.rc.s[0] == 2)
     {
       LEDG_ON(); // GREEN LED
       LEDR_OFF();
       LEDB_OFF();
+      RC_to_motor();
     }
-    else if (rc_ctrl.rc.s[0]==3)
+    else if (rc_ctrl.rc.s[0] == 3)
     {
       LEDR_ON(); // RED LED
       LEDB_OFF();
@@ -140,4 +148,38 @@ void chassis_current_give()
     motor_info_chassis[i].set_current = pid_calc(&motor_pid_chassis[i], motor_info_chassis[i].rotor_speed, motor_speed_target[i]);
   }
   set_motor_current_can2(0, motor_info_chassis[0].set_current, motor_info_chassis[1].set_current, motor_info_chassis[2].set_current, motor_info_chassis[3].set_current);
+}
+
+// 线性映射函数
+static int16_t map_range(int value, int from_min, int from_max, int to_min, int to_max)
+{
+  // 首先将输入值映射到[0, 1]的范围
+  double normalized_value = (value * 1.0 - from_min * 1.0) / (from_max * 1.0 - from_min * 1.0);
+
+  // 然后将[0, 1]的范围映射到[to_min, to_max]的范围
+  int16_t mapped_value = (int16_t)(normalized_value * (to_max - to_min) + to_min);
+
+  return mapped_value;
+}
+
+void RC_to_motor(void)
+{
+  // 电机速度与遥控器通道的对应关系
+  avg_speed = map_range(rc_ctrl.rc.ch[3], RC_MIN, RC_MAX, motor_min, motor_max);
+  motor_speed_target[CHAS_LF] = avg_speed;
+  motor_speed_target[CHAS_RF] = avg_speed;
+  motor_speed_target[CHAS_RB] = avg_speed;
+  motor_speed_target[CHAS_LB] = avg_speed;
+
+  // 判断需要旋转的电机
+  for (uint8_t i = 0; i < 4; i++)
+  {
+    /* code */
+    if (motor_flag[i] == 0)
+    {
+      motor_speed_target[i] = 0;
+    }
+  }
+  // 电机电流控制
+  chassis_current_give();
 }

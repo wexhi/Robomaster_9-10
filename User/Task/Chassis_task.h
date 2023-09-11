@@ -32,4 +32,5 @@ void RC_to_Vector(void);
 void chassis_motol_speed_calculate(void);
 void Motor_Speed_limiting(volatile int16_t *motor_speed,int16_t limit_speed);
 void chassis_current_give(void);
+void RC_to_motor(void);
 #endif
