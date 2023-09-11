@@ -6,8 +6,8 @@
 
 #define RC_MAX 660
 #define RC_MIN -660
-#define motor_max 450
-#define motor_min -450
+#define motor_max 900
+#define motor_min -900
 
 pid_struct_t motor_pid_chassis[4];
 pid_struct_t supercap_pid;
@@ -25,7 +25,7 @@ extern float powerdata[4];
 extern uint16_t shift_flag;
 
 uint8_t rc[18];
-uint8_t motor_flag[4] = {1, 0, 0, 0};
+uint8_t motor_flag[4] = {1, 1, 1, 1};
 int16_t avg_speed = 0;
 // Save imu data
 
@@ -167,8 +167,8 @@ void RC_to_motor(void)
   // 电机速度与遥控器通道的对应关系
   avg_speed = map_range(rc_ctrl.rc.ch[3], RC_MIN, RC_MAX, motor_min, motor_max);
   motor_speed_target[CHAS_LF] = avg_speed;
-  motor_speed_target[CHAS_RF] = avg_speed;
-  motor_speed_target[CHAS_RB] = avg_speed;
+  motor_speed_target[CHAS_RF] = -avg_speed;
+  motor_speed_target[CHAS_RB] = -avg_speed;
   motor_speed_target[CHAS_LB] = avg_speed;
 
   // 判断需要旋转的电机
