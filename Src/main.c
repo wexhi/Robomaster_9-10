@@ -1,20 +1,20 @@
 /* USER CODE BEGIN Header */
 /**
-  ******************************************************************************
-  * @file           : main.c
-  * @brief          : Main program body
-  ******************************************************************************
-  * @attention
-  *
-  * Copyright (c) 2023 STMicroelectronics.
-  * All rights reserved.
-  *
-  * This software is licensed under terms that can be found in the LICENSE file
-  * in the root directory of this software component.
-  * If no LICENSE file comes with this software, it is provided AS-IS.
-  *
-  ******************************************************************************
-  */
+ ******************************************************************************
+ * @file           : main.c
+ * @brief          : Main program body
+ ******************************************************************************
+ * @attention
+ *
+ * Copyright (c) 2023 STMicroelectronics.
+ * All rights reserved.
+ *
+ * This software is licensed under terms that can be found in the LICENSE file
+ * in the root directory of this software component.
+ * If no LICENSE file comes with this software, it is provided AS-IS.
+ *
+ ******************************************************************************
+ */
 /* USER CODE END Header */
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
@@ -64,46 +64,44 @@ void MX_FREERTOS_Init(void);
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
-//全局变量
+// 全局变量
 uint16_t can_cnt_2;
-float target_speed[7]={0};//实测最大空载转速320rpm
-float target_speed_can_2[7]={0};//实测最大空载转速320rpm
-moto_info_t motor_info[MOTOR_MAX_NUM];		//赋予最大的7个字节
-moto_info_t motor_info_can_2[MOTOR_MAX_NUM];		//赋予最大的7个字节
-	
-uint8_t can_flag=0;
-double step=9158/660; 
+float target_speed[7] = {0};                 // 实测最大空载转速320rpm
+float target_speed_can_2[7] = {0};           // 实测最大空载转速320rpm
+moto_info_t motor_info[MOTOR_MAX_NUM];       // 赋予最大的7个字节
+moto_info_t motor_info_can_2[MOTOR_MAX_NUM]; // 赋予最大的7个字节
+
+uint8_t can_flag = 0;
+double step = 9158 / 660;
 double r;
 double target_v;
 int16_t target_int1;
-int16_t target_int2;//用于叠加旋转和直行
+int16_t target_int2; // 用于叠加旋转和直行
 double target_curl;
-float yuntai_step=60*(1024-364);
+float yuntai_step = 60 * (1024 - 364);
 
-
-//拨盘
-float time=100;//时间
-float time_count;//时间计数值
-uint8_t flag_shoot;//标志位
-float round_shoot;//转动圈数
+// 拨盘
+float time = 100;   // 时间
+float time_count;   // 时间计数值
+uint8_t flag_shoot; // 标志位
+float round_shoot;  // 转动圈数
 float down;
 float up;
 
-
-//Yaw轴
-int16_t target_angle=4096;
+// Yaw轴
+int16_t target_angle = 4096;
 int16_t err_angle;
 int16_t max_yaw_speed;
 float small;
-float angle_limit =8191;//转角的最大值
+float angle_limit = 8191; // 转角的最大值
 
 uint8_t rx_data[8];
 /* USER CODE END 0 */
 
 /**
-  * @brief  The application entry point.
-  * @retval int
-  */
+ * @brief  The application entry point.
+ * @retval int
+ */
 int main(void)
 {
   /* USER CODE BEGIN 1 */
@@ -142,17 +140,18 @@ int main(void)
   MX_USART3_UART_Init();
   MX_USART6_UART_Init();
   /* USER CODE BEGIN 2 */
-	HAL_TIM_PWM_Start(&htim10,TIM_CHANNEL_1);
-	HAL_NVIC_SetPriority(TIM2_IRQn, 0, 0);//修改TIM2中断优先级
-//	HAL_NVIC_SetPriority(SysTick_IRQn,1,1);//调高HAL_Delay的时钟中断优先级
-	CAN1_Init();
+  HAL_TIM_PWM_Start(&htim10, TIM_CHANNEL_1);
+  HAL_NVIC_SetPriority(TIM2_IRQn, 0, 0); // 修改TIM2中断优先级
+  //	HAL_NVIC_SetPriority(SysTick_IRQn,1,1);//调高HAL_Delay的时钟中断优先级
+  CAN1_Init();
   CAN2_Init();
   USART6_Init();
-	USART3_Init();
-	HAL_TIM_Base_Start_IT(&htim1);//开启定时器1并打开中断,记得修改优先级
-DWT_Init(168);
-    while (BMI088_init(&hspi1, 1) != BMI088_NO_ERROR)
-        ;
+  USART3_Init();
+  HAL_TIM_Base_Start_IT(&htim1); // 开启定时器1并打开中断,记得修改优先级
+  DWT_Init(168);
+  // __HAL_UART_ENABLE_IT(&huart3, UART_IT_IDLE); // 使能空闲中断
+  while (BMI088_init(&hspi1, 1) != BMI088_NO_ERROR)
+    ;
   /* USER CODE END 2 */
 
   /* Call init function for freertos objects (in freertos.c) */
@@ -173,22 +172,22 @@ DWT_Init(168);
 }
 
 /**
-  * @brief System Clock Configuration
-  * @retval None
-  */
+ * @brief System Clock Configuration
+ * @retval None
+ */
 void SystemClock_Config(void)
 {
   RCC_OscInitTypeDef RCC_OscInitStruct = {0};
   RCC_ClkInitTypeDef RCC_ClkInitStruct = {0};
 
   /** Configure the main internal regulator output voltage
-  */
+   */
   __HAL_RCC_PWR_CLK_ENABLE();
   __HAL_PWR_VOLTAGESCALING_CONFIG(PWR_REGULATOR_VOLTAGE_SCALE1);
 
   /** Initializes the RCC Oscillators according to the specified parameters
-  * in the RCC_OscInitTypeDef structure.
-  */
+   * in the RCC_OscInitTypeDef structure.
+   */
   RCC_OscInitStruct.OscillatorType = RCC_OSCILLATORTYPE_HSE;
   RCC_OscInitStruct.HSEState = RCC_HSE_ON;
   RCC_OscInitStruct.PLL.PLLState = RCC_PLL_ON;
@@ -203,9 +202,8 @@ void SystemClock_Config(void)
   }
 
   /** Initializes the CPU, AHB and APB buses clocks
-  */
-  RCC_ClkInitStruct.ClockType = RCC_CLOCKTYPE_HCLK|RCC_CLOCKTYPE_SYSCLK
-                              |RCC_CLOCKTYPE_PCLK1|RCC_CLOCKTYPE_PCLK2;
+   */
+  RCC_ClkInitStruct.ClockType = RCC_CLOCKTYPE_HCLK | RCC_CLOCKTYPE_SYSCLK | RCC_CLOCKTYPE_PCLK1 | RCC_CLOCKTYPE_PCLK2;
   RCC_ClkInitStruct.SYSCLKSource = RCC_SYSCLKSOURCE_PLLCLK;
   RCC_ClkInitStruct.AHBCLKDivider = RCC_SYSCLK_DIV1;
   RCC_ClkInitStruct.APB1CLKDivider = RCC_HCLK_DIV4;
@@ -222,19 +220,20 @@ void SystemClock_Config(void)
 /* USER CODE END 4 */
 
 /**
-  * @brief  Period elapsed callback in non blocking mode
-  * @note   This function is called  when TIM3 interrupt took place, inside
-  * HAL_TIM_IRQHandler(). It makes a direct call to HAL_IncTick() to increment
-  * a global variable "uwTick" used as application time base.
-  * @param  htim : TIM handle
-  * @retval None
-  */
+ * @brief  Period elapsed callback in non blocking mode
+ * @note   This function is called  when TIM3 interrupt took place, inside
+ * HAL_TIM_IRQHandler(). It makes a direct call to HAL_IncTick() to increment
+ * a global variable "uwTick" used as application time base.
+ * @param  htim : TIM handle
+ * @retval None
+ */
 void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 {
   /* USER CODE BEGIN Callback 0 */
 
   /* USER CODE END Callback 0 */
-  if (htim->Instance == TIM3) {
+  if (htim->Instance == TIM3)
+  {
     HAL_IncTick();
   }
   /* USER CODE BEGIN Callback 1 */
@@ -243,9 +242,9 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 }
 
 /**
-  * @brief  This function is executed in case of error occurrence.
-  * @retval None
-  */
+ * @brief  This function is executed in case of error occurrence.
+ * @retval None
+ */
 void Error_Handler(void)
 {
   /* USER CODE BEGIN Error_Handler_Debug */
@@ -257,14 +256,14 @@ void Error_Handler(void)
   /* USER CODE END Error_Handler_Debug */
 }
 
-#ifdef  USE_FULL_ASSERT
+#ifdef USE_FULL_ASSERT
 /**
-  * @brief  Reports the name of the source file and the source line number
-  *         where the assert_param error has occurred.
-  * @param  file: pointer to the source file name
-  * @param  line: assert_param error line source number
-  * @retval None
-  */
+ * @brief  Reports the name of the source file and the source line number
+ *         where the assert_param error has occurred.
+ * @param  file: pointer to the source file name
+ * @param  line: assert_param error line source number
+ * @retval None
+ */
 void assert_failed(uint8_t *file, uint32_t line)
 {
   /* USER CODE BEGIN 6 */
