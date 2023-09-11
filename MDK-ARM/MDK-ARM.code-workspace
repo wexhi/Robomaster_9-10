@@ -29,7 +29,11 @@
             "editor.tabSize": 4,
             "editor.autoIndent": "advanced"
         },
-        "cortex-debug.variableUseNaturalFormat": true
+        "cortex-debug.variableUseNaturalFormat": true,
+        "commentTranslate.hover.variable": true,
+        "commentTranslate.hover.string": true,
+        "commentTranslate.targetLanguage": "zh-CN",
+        "commentTranslate.selectTargetLanguageWhenReplacing": false
     },
     "extensions": {
         "recommendations": [

@@ -5,6 +5,7 @@
 #include  "drv_can.h"
 #include "rc_potocal.h"
 #include "main.h"
+#include "gpio.h"
 typedef struct
 {
     uint16_t can_id;		//IDºÅ

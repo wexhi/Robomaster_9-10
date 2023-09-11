@@ -33,14 +33,22 @@ extern "C" {
 /* USER CODE END Includes */
 
 /* USER CODE BEGIN Private defines */
+#define LEDR_OFF() HAL_GPIO_WritePin(GPIOH, GPIO_PIN_12, GPIO_PIN_RESET)
+#define LEDR_ON() HAL_GPIO_WritePin(GPIOH, GPIO_PIN_12, GPIO_PIN_SET)
+#define LEDR_TOGGLE() HAL_GPIO_TogglePin(GPIOH, GPIO_PIN_12)
+#define LEDG_OFF() HAL_GPIO_WritePin(GPIOH, GPIO_PIN_11, GPIO_PIN_RESET)
+#define LEDG_ON() HAL_GPIO_WritePin(GPIOH, GPIO_PIN_11, GPIO_PIN_SET)
+#define LEDG_TOGGLE() HAL_GPIO_TogglePin(GPIOH, GPIO_PIN_11)
+#define LEDB_OFF() HAL_GPIO_WritePin(GPIOH, GPIO_PIN_10, GPIO_PIN_RESET)
+#define LEDB_ON() HAL_GPIO_WritePin(GPIOH, GPIO_PIN_10, GPIO_PIN_SET)
+#define LEDB_TOGGLE() HAL_GPIO_TogglePin(GPIOH, GPIO_PIN_10)
+  /* USER CODE END Private defines */
 
-/* USER CODE END Private defines */
+  void MX_GPIO_Init(void);
 
-void MX_GPIO_Init(void);
+  /* USER CODE BEGIN Prototypes */
 
-/* USER CODE BEGIN Prototypes */
-
-/* USER CODE END Prototypes */
+  /* USER CODE END Prototypes */
 
 #ifdef __cplusplus
 }

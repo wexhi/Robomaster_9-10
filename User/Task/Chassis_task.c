@@ -53,13 +53,33 @@ void Chassis_task(void const *pvParameters)
     // chanel 1 up max==660,down max==-660
     // chanel 2 left max==-660,right max==660
     // chanel 3 up max==660,down max==-660
-    if (rc_ctrl.rc.s[2] > 0.1 || rc_ctrl.rc.s[2] < -0.1 || rc_ctrl.rc.s[3] > 0.1 || rc_ctrl.rc.s[3] < -0.1)
+    // chanel 4 The remote control does not have this channel
+
+
+
+    if (rc_ctrl.rc.s[0] == 1)
     {
-      chassis_mode_flag = 1;
+      LEDB_ON(); // BLUE LED
+      LEDR_OFF();
+      LEDG_OFF();
+    }
+    else if (rc_ctrl.rc.s[0]==2)
+    {
+      LEDG_ON(); // GREEN LED
+      LEDR_OFF();
+      LEDB_OFF();
+    }
+    else if (rc_ctrl.rc.s[0]==3)
+    {
+      LEDR_ON(); // RED LED
+      LEDB_OFF();
+      LEDG_OFF();
     }
     else
     {
-      chassis_mode_flag = 0;
+      LEDR_OFF();
+      LEDB_OFF();
+      LEDG_OFF();
     }
     osDelay(1);
   }
