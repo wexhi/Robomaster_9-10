@@ -82,7 +82,7 @@ void Chassis_task(void const *pvParameters)
       LEDR_ON(); // RED LED
       LEDB_OFF();
       LEDG_OFF();
-      test_move();
+      RC_Move();
     }
     else
     {
@@ -186,7 +186,7 @@ void RC_to_motor(void)
 }
 
 
-void test_move(void)
+void RC_Move(void)
 {
   // 从遥控器获取控制输入
   // int16_t forward_backward_input = rc_ctrl.rc.ch[1]; // 前后输入
@@ -197,6 +197,9 @@ void test_move(void)
   Wz = rc_ctrl.rc.ch[0];         // 旋转输入
 
   /*************记得加上线性映射***************/
+  Vx = map_range(Vx, RC_MIN, RC_MAX, motor_min, motor_max);
+  Vy = map_range(Vy, RC_MIN, RC_MAX, motor_min, motor_max);
+  Wz = map_range(Wz, RC_MIN, RC_MAX, motor_min, motor_max);
 
   // 根据分解的速度调整电机速度目标
   // motor_speed_target[CHAS_LF] = Vx - Vy - Wz;
