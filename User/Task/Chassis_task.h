@@ -34,4 +34,5 @@ void Motor_Speed_limiting(volatile int16_t *motor_speed,int16_t limit_speed);
 void chassis_current_give(void);
 void RC_to_motor(void);
 void RC_Move(void);
+void test_motor(int16_t avg);
 #endif

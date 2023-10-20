@@ -25,7 +25,7 @@ extern float powerdata[4];
 extern uint16_t shift_flag;
 
 uint8_t rc[18];
-uint8_t motor_flag[4] = {0, 0, 0, 0}; // LF RF RB LB
+uint8_t motor_flag[4] = {1, 1, 1, 1}; // LF RF RB LB
 int16_t avg_speed = 0;
 // Save imu data
 
@@ -185,6 +185,26 @@ void RC_to_motor(void)
   chassis_current_give();
 }
 
+void test_motor(int16_t avg)
+{
+  // 电机速度与遥控器通道的对应关系
+  motor_speed_target[CHAS_LF] = avg;
+  motor_speed_target[CHAS_RF] = -avg;
+  motor_speed_target[CHAS_RB] = -avg;
+  motor_speed_target[CHAS_LB] = avg;
+
+  // 判断需要旋转的电机
+  for (uint8_t i = 0; i < 4; i++)
+  {
+    /* code */
+    if (motor_flag[i] == 0)
+    {
+      motor_speed_target[i] = 0;
+    }
+  }
+  // 电机电流控制
+  chassis_current_give();
+}
 
 void RC_Move(void)
 {
